@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Analysis Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card hero">
+        <h1>Classification Results</h1>
+        <p>Target: <strong>{{ results.target_column }}</strong> | Train/Test: {{ results.train_samples }}/{{ results.test_samples }}</p>
+        <p>Dataset shape: {{ results.dataset_shape[0] }} rows, {{ results.dataset_shape[1] }} columns</p>
+        <p>Best model by accuracy: <strong>{{ results.best_model.name }}</strong> ({{ '%.4f'|format(results.best_model.accuracy) }})</p>
+        <a class="back-link" href="{{ url_for('index') }}">Run Another Dataset</a>
+      </section>
+
+      {% for model in results.models %}
+      <section class="card model-card">
+        <h2>{{ model.name }}</h2>
+        <div class="metrics-grid">
+          <div><span>Accuracy</span><strong>{{ '%.4f'|format(model.accuracy) }}</strong></div>
+          <div><span>Precision</span><strong>{{ '%.4f'|format(model.precision) }}</strong></div>
+          <div><span>Recall</span><strong>{{ '%.4f'|format(model.recall) }}</strong></div>
+          <div><span>F1</span><strong>{{ '%.4f'|format(model.f1) }}</strong></div>
+          <div><span>ROC-AUC</span><strong>{{ '%.4f'|format(model.roc_auc) if model.roc_auc is not none else 'N/A (multiclass)' }}</strong></div>
+        </div>
+
+        <h3>Confusion Matrix</h3>
+        <div class="matrix">
+          {% for row in model.confusion_matrix %}
+          <div class="matrix-row">
+            {% for value in row %}
+            <span>{{ value }}</span>
+            {% endfor %}
+          </div>
+          {% endfor %}
+        </div>
+
+        <h3>Classification Report</h3>
+        <pre>{{ model.report }}</pre>
+      </section>
+      {% endfor %}
+    </main>
+  </body>
+</html>

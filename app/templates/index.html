@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ML Classification Analyzer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+  </head>
+  <body>
+    <main class="container">
+      <section class="card hero">
+        <h1>Upload a Classification CSV</h1>
+        <p>
+          This app runs Logistic Regression, K-Nearest Neighbors, and Gaussian Naive
+          Bayes on your uploaded dataset.
+        </p>
+      </section>
+
+      <section class="card">
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <form action="{{ url_for('analyze') }}" method="post" enctype="multipart/form-data">
+          <label for="dataset">CSV File</label>
+          <input id="dataset" name="dataset" type="file" accept=".csv" required />
+
+          <label for="target_column">Target Column (optional, defaults to last column)</label>
+          <input id="target_column" name="target_column" type="text" placeholder="Purchased" />
+
+          <label for="drop_columns">Columns To Drop (optional, comma-separated)</label>
+          <input id="drop_columns" name="drop_columns" type="text" placeholder="User ID" />
+
+          <div class="grid-two">
+            <div>
+              <label for="test_size">Test Size (0.1 to 0.5)</label>
+              <input id="test_size" name="test_size" type="number" step="0.01" min="0.1" max="0.5" value="0.25" />
+            </div>
+            <div>
+              <label for="knn_neighbors">KNN Neighbors</label>
+              <input id="knn_neighbors" name="knn_neighbors" type="number" min="1" value="3" />
+            </div>
+          </div>
+
+          <label for="random_state">Random State</label>
+          <input id="random_state" name="random_state" type="number" value="42" />
+
+          <button type="submit">Run Analysis</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
